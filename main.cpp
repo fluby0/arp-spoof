@@ -204,6 +204,16 @@ int relay_and_detect(
                     }
                     break;
                 }
+
+                if (eth->smac() == mac_table[i][0] && src_ip == ip_table[i][0] && dst_ip != my_ip) {
+                    eth->smac_ = my_mac;
+                    eth->dmac_ = mac_table[i][1];
+                    int send_res = pcap_sendpacket(pcap, pkt_data, ntohs(ip->totalLength) + sizeof(EthHdr));
+                    if (send_res != 0) {
+                        fprintf(stderr, "pcap_sendpacket error: %s\n", pcap_geterr(pcap));
+                    }
+                    break;
+                }
             }
         }
 
